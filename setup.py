@@ -5,43 +5,43 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-with open('requirements.txt', encoding='utf-8') as f:
-    requirements = [line.strip() for line in f if line]
 
-setup_requirements = [ ]
-
-test_requirements = [ ]
+requirements = [
+    "shapely==1.7.0",
+    "geojson==2.5.0",
+    "requests==2.23.0",
+    "retry",
+    "pyproj",
+    "pandas",
+]
 
 setup(
     author="Joao Carabetta",
-    author_email='joao.carabetta@gmail.com',
-    python_requires='>=3',
+    author_email="joao.carabetta@gmail.com",
+    python_requires=">=3",
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3'
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
     ],
-    description="Python bindings for S2, a hierarchical square geospatial indexing system.",
-    entry_points={
-    },
+    description="Calculate Open Street Maps road length for any polygon",
+    entry_points={},
     install_requires=requirements,
     license="MIT license",
-    long_description=readme + '\n\n' + history,
+    long_description=readme + "\n\n" + history,
     include_package_data=True,
-    name='s2',
-    packages=find_packages(include=['s', 's2.*']),
-    setup_requires=setup_requirements,
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/JoaoCarabetta/s2',
-    version='0.1.9',
+    name="osm-road-length",
+    packages=find_packages(include=["osm_road_length", "osm_road_length.*"]),
+    test_suite="tests",
+    url="https://github.com/JoaoCarabetta/osm-road-length",
+    version="0.1.4",
     zip_safe=False,
 )

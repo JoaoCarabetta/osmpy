@@ -1,2 +1,6 @@
-s2sphere
-shapely
+shapely==1.7.0
+geojson==2.5.0
+requests==2.23.0
+retry
+pyproj
+pandas
