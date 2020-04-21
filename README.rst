@@ -36,6 +36,10 @@ Credits
 
 * Free software: MIT license
 
+Function `katana` from snorfalorpagus_.
+
+.. _snorfalorpagus: https://snorfalorpagus.net/blog/2016/03/13/splitting-large-polygons-for-faster-intersections/
+
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
