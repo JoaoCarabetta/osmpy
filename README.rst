@@ -8,23 +8,16 @@ It supports any region size and shape.
 
 Installing
 -----------
-.. code:: python
+.. code:: bash
 
    pip install osm-road-length
 
 Using
 -----
 
-Import It
-
-.. code:: python
-
-        import osm_road_length
-
-Get length from geometry
-
 .. code:: python        
-
+        
+        import osm_road_length
         from shapely import wkt
 
         geometry = wkt.loads('POLYGON((-43.2958811591311 -22.853167273541693,-43.30961406928735 -23.035275736044728,-43.115980036084224 -23.02010939749927,-43.157178766552974 -22.832917893834313,-43.2958811591311 -22.853167273541693))')
