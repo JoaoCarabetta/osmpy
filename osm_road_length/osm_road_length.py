@@ -41,7 +41,10 @@ def threshold_func(g, value):
 
 
 def katana(geometry, threshold_func, threshold_value, count=0):
-    """Split a Polygon into two parts across it's shortest dimension"""
+    """Split a Polygon into two parts across it's shortest dimension
+    
+    KUDOS https://snorfalorpagus.net/blog/2016/03/13/splitting-large-polygons-for-faster-intersections/
+    """
     bounds = geometry.bounds
     width = bounds[2] - bounds[0]
     height = bounds[3] - bounds[1]
