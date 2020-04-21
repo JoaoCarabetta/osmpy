@@ -37,7 +37,7 @@ setup(
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     name='s2',
-    packages=find_packages(include=['s2', 's2.*']),
+    packages=find_packages(include=['s', 's2.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
