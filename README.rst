@@ -2,6 +2,24 @@
 OSM Road Length
 ===============
 
+|Maintenance yes|
+|PyPI version fury.io|
+|PyPI download total|
+|PyPI download month|
+
+.. |PyPI version fury.io| image:: https://badge.fury.io/py/osm-road-length.svg
+   :target: https://badge.fury.io/py/osm-road-length
+.. |PyPI download month| image:: https://pepy.tech/badge/osm-road-length/month
+   :target: https://pepy.tech/project/osm-road-length/month
+.. |PyPI download total| image:: https://pepy.tech/badge/osm-road-length
+   :target: https://pepy.tech/project/osm-road-length
+.. |Maintenance yes| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
+   :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
+   
+   
+[![Downloads]()]()
+
+
 A tool to get the highway length from Open Street Maps of a region using Python.
 
 It supports any region size and shape.
