@@ -17,9 +17,9 @@ OSM Road Length
    :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
    
 
-A tool to get the highway length from Open Street Maps of a region using Python.
+A tool to get the highway length from Open Street Maps of a region using Python using Overpass Turbo API.
 
-It supports any region size and shape.
+It supports any region size and shape. From cities to continents.
 
 Installing
 -----------
@@ -38,6 +38,13 @@ Using
         geometry = wkt.loads('POLYGON((-43.2958811591311 -22.853167273541693,-43.30961406928735 -23.035275736044728,-43.115980036084224 -23.02010939749927,-43.157178766552974 -22.832917893834313,-43.2958811591311 -22.853167273541693))')
 
         length = osm_road_length.get(geometry)
+
+Why not OSMnx?
+--------------
+
+OSMnx_ is a great package if you want to analyse the road infrastructure in depth. But, sometimes we just want simple numbers to do comparissons. This package does not load all road data to memory (imagine loading a whole country to your RAM). The package fetches the Overpass API directly. If the region is too large, it splits the region in a smart way to handle the Overpass API constrains. 
+
+.. _OSMnx: https://github.com/gboeing/osmnx
 
 Credits
 -------
