@@ -16,9 +16,6 @@ OSM Road Length
 .. |Maintenance yes| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
    :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
    
-   
-[![Downloads]()]()
-
 
 A tool to get the highway length from Open Street Maps of a region using Python.
 
