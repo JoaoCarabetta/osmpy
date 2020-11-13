@@ -66,10 +66,8 @@ osmpy.get(query, boundary)
 
 ## Create a precooked query
 
-Add the following query to `osmpy/queries.py`
-
 ```python
-class YourPrecookedQuery(QueryType):
+class YourPrecookedQuery(osmpy.query.QueryType):
 
     query = """
     <OSM Overpass Turbo>
@@ -83,6 +81,8 @@ class YourPrecookedQuery(QueryType):
         """Post process API result
         """
         return df['tags'].apply(pd.Series).groupby('amenity').sum()
+
+osmpy.get(YourPrecookedQuery, boundary)
 ```
 
 ## Credits
