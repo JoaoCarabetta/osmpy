@@ -6,4 +6,3 @@ retry
 pyproj
 pandas
 pytest
-twine

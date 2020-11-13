@@ -1,0 +1,53 @@
+[tool.poetry]
+authors = ["Joao Carabetta <joao.carabetta@gmail.com>"]
+classifiers = [
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+description = "Powerfull wrapper around OSM Overpass Turbo to query regions of any size and shape"
+homepage = "https://github.com/JoaoCarabetta/osmpy"
+license = "AM-331-A3 Licencia de Software"
+name = "osmpy"
+readme = "README.md"
+repository = "https://github.com/JoaoCarabetta/osmpy"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+shapely = "1.7.0"
+geojson = "2.5.0"
+requests = "2.23.0"
+retry = "*"
+pyproj = "*"
+pandas = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
+python = "^3.6"
+shapely = "1.7.0"
+geojson = "2.5.0"
+requests = "2.23.0"
+retry = "*"
+pyproj = "*"
+pandas = "^1.0.0"
+black = "*"
+poetry = "*"
+
+[tool.black]
+# Use the more relaxed max line length permitted in PEP8.
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \venv
+  | build
+  | dist
+  | htmlcov
+)/
+'''
+line-length = 88
+target-version = ["py36", "py37", "py38"]
+[build-system]
+build-backend = "poetry.masonry.api"
+requires = ["poetry>=0.12"]

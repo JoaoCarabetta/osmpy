@@ -12,7 +12,7 @@ from retry import retry
 import pandas as pd
 import warnings
 import re
-import osm_road_length.queries as qs
+import osmpy.queries as qs
 import sys
 
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -147,7 +147,7 @@ def get(query, boundary, threshold_value=1000000):
 
     if isinstance(query, str):
         if query in _get_queries_names():
-            query_obj = getattr(sys.modules['osm_road_length.queries'], query)()
+            query_obj = getattr(sys.modules['osmpy.queries'], query)()
         else:
             query_obj = qs.QueryType()
             query_obj.query = query
@@ -177,5 +177,5 @@ def list_queries():
     return pd.DataFrame([
         {'name': t,
         'docstring': re.sub('\s+',' ',
-                getattr(sys.modules['osm_road_length.queries'], t)().docstring)}
+                getattr(sys.modules['osmpy.queries'], t)().docstring)}
      for t in _get_queries_names()])

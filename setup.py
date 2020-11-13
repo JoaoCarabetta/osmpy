@@ -39,7 +39,7 @@ setup(
     long_description=readme + "\n\n" + history,
     include_package_data=True,
     name="osm-road-length",
-    packages=find_packages(include=["osm_road_length", "osm_road_length.*"]),
+    packages=find_packages(include=["osmpy", "osmpy.*"]),
     test_suite="tests",
     url="https://github.com/JoaoCarabetta/osm-road-length",
     version="0.1.4",

@@ -100,3 +100,4 @@ python_boilerplate/
 
 notebooks/
 .osm-road-length/
+.osmpy/
