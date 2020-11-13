@@ -55,12 +55,16 @@ primary_link      12   1123.544
 ```
 
 #### You can use your own query
+
 ```python
+
+## Use `{boundary}` as a placeholder.
 query = """
     [out:json];
     node["amenity"](poly:"{boundary}");
     out body geom;
     """
+
 osmpy.get(query, boundary)
 ```
 
@@ -70,7 +74,7 @@ osmpy.get(query, boundary)
 class YourPrecookedQuery(osmpy.query.QueryType):
 
     query = """
-    <OSM Overpass Turbo>
+    <OSM Overpass Turbo Query>
     """
 
     docstring = """
@@ -84,6 +88,8 @@ class YourPrecookedQuery(osmpy.query.QueryType):
 
 osmpy.get(YourPrecookedQuery, boundary)
 ```
+
+:point_right: Leave an issue or PR if you want to add a new query to the package
 
 ## Credits
 
