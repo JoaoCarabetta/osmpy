@@ -11,6 +11,9 @@ import json
 from retry import retry
 import pandas as pd
 import warnings
+import re
+import osm_road_length.queries as qs
+import sys
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -111,28 +114,19 @@ def to_overpass_coords(x):
 
 
 @retry(tries=5)
-def overpass_request(geo):
+def overpass_request(query, boundary):
 
     overpass_url = "http://overpass-api.de/api/interpreter"
-    overpass_query = (
-        """
-    [out:json];
-    way["highway"](poly:"%s");
-    for (t["highway"])
-    {
-       make stat highway=_.val,
-           count=count(ways),length=sum(length());
-       out;
-    }"""
-        % geo
-    )
 
-    response = requests.get(overpass_url, params={"data": overpass_query})
-    return [e["tags"] for e in response.json()["elements"]]
+    overpass_query = query.query.format(boundary=boundary)
+
+    response = requests.get(overpass_url, params={"data": overpass_query}).json()
+
+    return pd.DataFrame(response['elements'])
 
 
-def get(geometry, threshold_value=1000000):
-    """Get Open Street Maps highways length in meters and object count for a given geometry
+def get(query, boundary, threshold_value=1000000):
+    """Get Open Street Maps highways length in meters and object count for a given boundary
 
     It splits the regions to manage overpass turbo limits.
 
@@ -140,7 +134,7 @@ def get(geometry, threshold_value=1000000):
 
     Parameters
     ----------
-    geometry : shapely.geometry
+    boundary : shapely.geometry
         A shapely polygon
     threshold_value : int, optional
         Maximum area in sq km to split the polygons, by default 1000000
@@ -151,17 +145,37 @@ def get(geometry, threshold_value=1000000):
         Table indexed by highway with length sum in meters and observation count
     """
 
-    geometries = katana(geometry, threshold_func, threshold_value)
+    if isinstance(query, str):
+        if query in _get_queries_names():
+            query_obj = getattr(sys.modules['osm_road_length.queries'], query)()
+        else:
+            query_obj = qs.QueryType()
+            query_obj.query = query
+    elif isinstance(query, type):
+        query_obj = query()
+
+    boundaries = katana(boundary, threshold_func, threshold_value)
 
     responses = []
-    for geo in geometries:
+    for bound in boundaries:
 
-        geo = to_overpass_coords(geo)
-        responses.append(overpass_request(geo))
+        bound = to_overpass_coords(bound)
+        responses.append(overpass_request(query_obj, bound))
 
     data = pd.concat([pd.DataFrame(d) for d in responses])
-    data["length"] = data["length"].astype(float)
-    data["count"] = data["count"].astype(int)
-    data = data.groupby("highway").sum()
+
+    data = query_obj.postprocess(data)
 
     return data
+
+def _get_queries_names():
+
+    return [t for t in dir(qs) if (t[0].isupper() and (t is not 'QueryType'))]
+
+def list_queries():
+    
+    return pd.DataFrame([
+        {'name': t,
+        'docstring': re.sub('\s+',' ',
+                getattr(sys.modules['osm_road_length.queries'], t)().docstring)}
+     for t in _get_queries_names()])

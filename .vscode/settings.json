@@ -1,4 +1,5 @@
 {
     "restructuredtext.linter.disabled": true,
-    "restructuredtext.confPath": ""
+    "restructuredtext.confPath": "",
+    "python.pythonPath": "/Users/joaoc/Documents/Projects/osm-road-length/.osm-road-length/bin/python3"
 }
