@@ -71,7 +71,7 @@ osmpy.get(query, boundary)
 ## Create a precooked query
 
 ```python
-class YourPrecookedQuery(osmpy.query.QueryType):
+class YourPrecookedQuery(osmpy.queries.QueryType):
 
     query = """
     <OSM Overpass Turbo Query>
