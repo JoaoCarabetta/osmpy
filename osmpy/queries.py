@@ -5,6 +5,36 @@ class QueryType:
     def postprocess(self, df):
         return df
 
+class POIs(osmpy.queries.QueryType):
+
+    query = """
+        [out:json];
+        node["shop"](poly:"{boundary}");
+        node["amenity"](poly:"{boundary}");
+        out body geom;
+    """
+
+    docstring = """
+    Location of Points of Interest within a boundary. 
+    Points of Interest being all shops and amenities.
+    """
+    
+    def prep_pois(x):
+    
+        if x.get('amenity'):
+            return f'amenity:{x["amenity"]}'
+        elif x.get('shop'):
+            return f'shop:{x["shop"]}'
+        else:
+            return None
+
+    def postprocess(self, df):
+        """Post process API result
+        """
+        df['poi'] = df['tags'].apply(prep_pois)
+        
+        return df
+
 class Amenities(QueryType):
 
     query = """
