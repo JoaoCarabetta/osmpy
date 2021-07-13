@@ -94,6 +94,4 @@ osmpy.get(YourPrecookedQuery, boundary)
 
 ## Credits
 
-Free software: MIT license
-
 Function `katana` from @snorfalorpagus_.
