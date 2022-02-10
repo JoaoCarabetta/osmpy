@@ -15,7 +15,7 @@ osmpy.list_queries()
 3     RoadLength      Length of road by roadtype within a boundary 
 ```
 
-#### Get all POIs within a boundary
+#### Get all Points of Interest (POIs) within a boundary
 ```python
 import osmpy
 from shapely import wkt
