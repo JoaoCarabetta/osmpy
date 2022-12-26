@@ -12,8 +12,9 @@ from retry import retry
 import pandas as pd
 import warnings
 import re
-import osmpy.queries as qs
+from .queries import *
 import sys
+import inspect
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -34,8 +35,10 @@ def get_area(s):
     proj = partial(
         pyproj.transform, pyproj.Proj(init="epsg:4326"), pyproj.Proj(init="epsg:3857")
     )
-
-    return transform(proj, s).area / 1e6  # km
+    area = transform(proj, s).area / 1e6  # km
+    if pd.isnull(area):
+        raise ValueError("The coordinates format is incorect. The expected format: lng lat, lng lat, lng lat, ...")
+    return area
 
 
 def threshold_func(g, value):
@@ -43,7 +46,7 @@ def threshold_func(g, value):
     return get_area(g) < value
 
 
-def katana(geometry, threshold_func, threshold_value, count=0):
+def katana(geometry, threshold_func, threshold_value, count=0, urllen_threshold=7648):
     """Split a Polygon into two parts across it's shortest dimension
     
     KUDOS https://snorfalorpagus.net/blog/2016/03/13/splitting-large-polygons-for-faster-intersections/
@@ -51,9 +54,10 @@ def katana(geometry, threshold_func, threshold_value, count=0):
     bounds = geometry.bounds
     width = bounds[2] - bounds[0]
     height = bounds[3] - bounds[1]
-    if threshold_func(geometry, threshold_value) or count == 250:
-        # either the polygon is smaller than the threshold, or the maximum
-        # number of recursions has been reached
+    if (threshold_func(geometry, threshold_value) and (len(to_overpass_coords(geometry)) < urllen_threshold)) or (count == 250):
+        # either the polygon is smaller than the threshold
+        # AND the length of the expected url is short enough to avoid Error 414
+        # OR the maximum number of recursions has been reached
         return [geometry]
     if height >= width:
         # split left to right
@@ -73,7 +77,7 @@ def katana(geometry, threshold_func, threshold_value, count=0):
             c = [c]
         for e in c:
             if isinstance(e, (Polygon, MultiPolygon)):
-                result.extend(katana(e, threshold_func, threshold_value, count + 1))
+                result.extend(katana(e, threshold_func, threshold_value, count + 1, urllen_threshold=urllen_threshold))
     if count > 0:
         return result
     # convert multipart into singlepart
@@ -125,7 +129,7 @@ def overpass_request(query, boundary):
     return pd.DataFrame(response['elements'])
 
 
-def get(query, boundary, threshold_value=1000000):
+def get(query, boundary, threshold_value=1000000, urllen_threshold=7648):
     """Get Open Street Maps highways length in meters and object count for a given boundary
 
     It splits the regions to manage overpass turbo limits.
@@ -138,6 +142,8 @@ def get(query, boundary, threshold_value=1000000):
         A shapely polygon
     threshold_value : int, optional
         Maximum area in sq km to split the polygons, by default 1000000
+    urllen_threshold : int, optional
+        Maximum length of the url to send to Overpass API, by default 7648 (found experimentally)
 
     Returns
     -------
@@ -149,12 +155,24 @@ def get(query, boundary, threshold_value=1000000):
         if query in _get_queries_names():
             query_obj = getattr(sys.modules['osmpy.queries'], query)()
         else:
-            query_obj = qs.QueryType()
+            query_obj = QueryType()
             query_obj.query = query
     elif isinstance(query, type):
         query_obj = query()
 
-    boundaries = katana(boundary, threshold_func, threshold_value)
+    boundaries = katana(boundary, threshold_func, threshold_value, urllen_threshold=urllen_threshold)
+    
+    # Looking for the boundaries which generate too long URLs resulting in Error 414.
+    # If found the boundaries will be processed again by `katana()`
+    while True:
+        for geo in boundaries:
+            urllen = len(to_overpass_coords(geo))
+            if urllen >= urllen_threshold:
+                boundaries.remove(geo)
+                boundaries.extend(katana(geo, threshold_func, threshold_value, urllen_threshold=urllen_threshold))
+                break
+        else:
+            break
 
     responses = []
     for bound in boundaries:
@@ -169,8 +187,8 @@ def get(query, boundary, threshold_value=1000000):
     return data
 
 def _get_queries_names():
-
-    return [t for t in dir(qs) if (t[0].isupper() and (t is not 'QueryType'))]
+    query_classes = [c[0] for c in inspect.getmembers(sys.modules[__name__], inspect.isclass) if QueryType in c[1].__bases__]
+    return query_classes
 
 def list_queries():
     
