@@ -37,7 +37,7 @@ osmpy.get('POIs', boundary)
 86  node  6625433753 -23.547111 -46.624790  {'access': 'yes', 'addr:city': 'São Paulo', 'a...  amenity:bicycle_parking
 ```
 
-#### Total road length by road type
+#### Total road length in meters by road type
 ```python
 osmpy.get('RoadLength', boundary)
 
