@@ -19,7 +19,7 @@ class POIs(QueryType):
     Points of Interest being all shops and amenities.
     """
     
-    def prep_pois(x):
+    def prep_pois(self, x):
     
         if x.get('amenity'):
             return f'amenity:{x["amenity"]}'
@@ -31,7 +31,7 @@ class POIs(QueryType):
     def postprocess(self, df):
         """Post process API result
         """
-        df['poi'] = df['tags'].apply(prep_pois)
+        df['poi'] = df['tags'].apply(self.prep_pois)
         
         return df
 
