@@ -31,13 +31,13 @@ def check_length(s, threshold=3000):
     return len(str(s)) < threshold
 
 def get_area(s):
+    """Get the area of a shapely polygon in sq km"""
     s = shape(s)
     proj = partial(
         pyproj.transform, pyproj.Proj(init="epsg:4326"), pyproj.Proj(init="epsg:3857")
     )
     area = transform(proj, s).area / 1e6  # km
-    if pd.isnull(area):
-        raise ValueError("The coordinates format is incorect. The expected format: lng lat, lng lat, lng lat, ...")
+    
     return area
 
 
@@ -130,7 +130,7 @@ def overpass_request(query, boundary):
 
 
 def get(query, boundary, threshold_value=1000000, urllen_threshold=7648):
-    """Get Open Street Maps highways length in meters and object count for a given boundary
+    """Get Open Street Maps Turbo Query for a given boundary
 
     It splits the regions to manage overpass turbo limits.
 
@@ -197,3 +197,5 @@ def list_queries():
         'docstring': re.sub('\s+',' ',
                 getattr(sys.modules['osmpy.queries'], t)().docstring)}
      for t in _get_queries_names()])
+
+
