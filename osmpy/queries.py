@@ -5,7 +5,7 @@ class QueryType:
     def postprocess(self, df):
         return df
 
-class POIs(osmpy.queries.QueryType):
+class POIs(QueryType):
 
     query = """
         [out:json];
@@ -19,7 +19,7 @@ class POIs(osmpy.queries.QueryType):
     Points of Interest being all shops and amenities.
     """
     
-    def prep_pois(x):
+    def prep_pois(self, x):
     
         if x.get('amenity'):
             return f'amenity:{x["amenity"]}'
@@ -31,7 +31,7 @@ class POIs(osmpy.queries.QueryType):
     def postprocess(self, df):
         """Post process API result
         """
-        df['poi'] = df['tags'].apply(prep_pois)
+        df['poi'] = df['tags'].apply(self.prep_pois)
         
         return df
 
@@ -87,4 +87,13 @@ class RoadLength(QueryType):
     """
 
     def postprocess(self, df):
-        return df['tags'].apply(pd.Series).groupby('highway').sum()
+        if 'tags' in df.columns:
+            return df['tags'].apply(pd.Series).astype({ # It seems API may generate dataframe with strings
+                'highway': 'str',
+                'count': 'int',
+                'length': 'float'
+            }).groupby('highway').sum()
+        else:
+            empty = pd.DataFrame(columns=['count', 'length']).astype({'count': 'int', 'length': 'float'})
+            empty.index.name = 'highway'
+            return empty
